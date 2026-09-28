@@ -1,26 +1,33 @@
 # -*- coding: utf-8 -*-
-"""AI 推荐模块：基于历史订单做简单的商品推荐。"""
-
-from collections import Counter
+"""AI 智能工单模块：基于故障描述自动分级并给出维修建议。"""
 
 
-def recommend(items, top_n=3):
-    """根据商品出现次数推荐热门商品，返回前 top_n 个。
-
-    items: 所有历史订单中的商品名列表。
-    """
-    counter = Counter(items)
-    return [name for name, _ in counter.most_common(top_n)]
+KEYWORDS = {
+    "紧急": ["火灾", "断电", "漏电", "冒烟", "爆炸"],
+    "高": ["无法开机", "无法使用", "完全不能", "蓝屏", "损坏", "无法正常"],
+    "中": ["故障", "异常", "卡顿", "报错", "失灵", "闪烁", "不清晰"],
+}
 
 
-def personalize(user_items, all_items, top_n=3):
-    """给单个用户推荐：优先该用户没买过的热门商品。"""
-    hot = recommend(all_items, top_n=10)
-    bought = set(user_items)
-    return [name for name in hot if name not in bought][:top_n]
+def classify(fault_desc):
+    """根据故障描述中的关键词自动判断紧急程度。"""
+    for level, words in KEYWORDS.items():
+        for w in words:
+            if w in fault_desc:
+                return level
+    return "低"
+
+
+def suggest(fault_desc):
+    """根据故障描述给出初步维修建议。"""
+    if any(w in fault_desc for w in ["投影", "屏幕", "显示"]):
+        return "检查信号线与显示接口，尝试重启设备"
+    if any(w in fault_desc for w in ["网络", "无法联网", "断网"]):
+        return "重启路由器，检查网线/无线连接"
+    return "联系设备管理员上门检修"
 
 
 if __name__ == "__main__":
-    history = ["咖啡", "牛奶", "咖啡", "面包", "牛奶", "咖啡"]
-    print("热门推荐:", recommend(history))
-    print("个性化:", personalize(["咖啡"], history))
+    desc = "投影仪画面闪烁，无法正常显示"
+    print("紧急程度分级:", classify(desc))
+    print("维修建议:", suggest(desc))

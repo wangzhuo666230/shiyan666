@@ -1,27 +1,34 @@
 # -*- coding: utf-8 -*-
-"""订单模块单元测试。运行：python -m unittest 测试记录/test_order.py"""
+"""报修工单模块单元测试。运行：python -m unittest 测试记录/test_order.py"""
 
 import unittest
 
 import sys
 sys.path.insert(0, "源代码")
 
-from order import Order
+from order import RepairTicket
 
 
-class OrderTest(unittest.TestCase):
+class RepairTicketTest(unittest.TestCase):
 
-    def test_total_quantity(self):
-        o = Order("A001", {"咖啡": 2, "牛奶": 1})
-        self.assertEqual(o.total_quantity(), 3)
+    def test_priority_default(self):
+        t = RepairTicket("T001", "投影仪", "画面闪烁", "张老师")
+        self.assertEqual(t.priority, "中")
 
-    def test_total_price(self):
-        o = Order("A001", {"咖啡": 2, "牛奶": 1})
-        self.assertEqual(o.total_price({"咖啡": 18, "牛奶": 6}), 42)
+    def test_escalate(self):
+        t = RepairTicket("T001", "投影仪", "画面闪烁", "张老师")
+        t.escalate()
+        self.assertEqual(t.priority, "高")
 
-    def test_empty_items(self):
-        o = Order("A000", {})
-        self.assertEqual(o.total_quantity(), 0)
+    def test_invalid_priority(self):
+        t = RepairTicket("T001", "投影仪", "画面闪烁", "张老师")
+        t.set_priority("极高")
+        self.assertEqual(t.priority, "中")
+
+    def test_close(self):
+        t = RepairTicket("T001", "投影仪", "画面闪烁", "张老师")
+        t.close()
+        self.assertEqual(t.status, "已完成")
 
 
 if __name__ == "__main__":
