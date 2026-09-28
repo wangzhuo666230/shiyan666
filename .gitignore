@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+env/
+dist/
+build/
+*.egg-info/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# 系统 / 临时
+.DS_Store
+Thumbs.db
+*.log
+.tmp
